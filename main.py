@@ -2,6 +2,13 @@ import est_desc
 import modelos_pred
 import visualizacion
 
+try:
+    import red_neuronal
+    red_enabled = True
+except ModuleNotFoundError:
+    red_neuronal = None
+    red_enabled = False
+
 def banner(texto):
     linea = "█" * 62
     print(f"\n{linea}")
@@ -18,15 +25,34 @@ if __name__ == "__main__":
     banner("PARTE 2 — MODELOS PREDICTIVOS")
     resultados = modelos_pred.ejecutar()
 
+    resultados_nn = None
+    if red_enabled:
+        banner("PARTE 3 — RED NEURONAL")
+        resultados_nn = red_neuronal.ejecutar()
+
     banner("GENERANDO FIGURAS")
     visualizacion.generar_todas(resultados)
+    if resultados_nn is not None:
+        visualizacion.fig6_comparativa_modelos(resultados_nn)
+        visualizacion.fig8_residuales(resultados_nn)
 
     banner("RESUMEN EJECUTIVO")
     mejor    = resultados["mejor"]
     metricas = resultados["metricas"]
     imps     = resultados["importancias"]
 
+    if resultados_nn is not None:
+        mejor = resultados_nn["mejor"]
+        metricas = resultados_nn["metricas"]
+
     print("  PARTE 2 — Métricas en test set")
+    print("  ──────────────────────────────────")
+    for m in metricas:
+        print(f"  {m['nombre']:<28} R²={m['r2']:+.3f}  RMSE={m['rmse']:.2f} min")
+
+    print(f"\n  ✔ Mejor modelo: {mejor}")
+
+    print("  PARTE 2 y 3 — Métricas en test set")
     print("  ──────────────────────────────────")
     for m in metricas:
         print(f"  {m['nombre']:<28} R²={m['r2']:+.3f}  RMSE={m['rmse']:.2f} min")
