@@ -1,4 +1,4 @@
-# parte 3 - red neuronal (predecir tiempo de viaje)
+#red neuronal (predecir tiempo de viaje)
 
 import numpy as np
 import pandas as pd
@@ -12,7 +12,7 @@ from datos import FEATURES
 import modelos_pred
 from modelos_pred import titulo, evaluar
 
-# keras no usa random_state como sklearn; su equivalente para fijar el azar es set_seed
+#keras no usa random_state como sklearn, utilizamos set_seed que es lo mismo
 tf.random.set_seed(42)
 
 #modelo
@@ -38,7 +38,7 @@ def red_neuronal(d):
                       epochs=200, batch_size=256, verbose=0, callbacks=[es])
     print(f"\n  entreno {len(hist.history['loss'])} epocas")
 
-    # las predicciones salen escaladas, las volvemos a minutos
+    #las volvemos a minutos
     sy = d["sy"]
     pred_train = sy.inverse_transform(modelo.predict(d["X_train"], verbose=0)).ravel()
     pred_test  = sy.inverse_transform(modelo.predict(d["X_test"],  verbose=0)).ravel()
