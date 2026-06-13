@@ -1,1 +1,0 @@
-# EvaluacionNC-DS-Gnc
