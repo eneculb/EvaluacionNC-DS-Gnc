@@ -1,4 +1,4 @@
-# parte 3 - red neuronal (predecir tiempo de viaje)
+#red neuronal (predecir tiempo de viaje)
 
 import numpy as np
 import pandas as pd
