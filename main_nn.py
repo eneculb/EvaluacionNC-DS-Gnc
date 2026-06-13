@@ -15,8 +15,8 @@ if __name__ == "__main__":
     resultados = red_neuronal.ejecutar()
 
     banner("GENERANDO FIGURAS")
-    visualizacion.fig4_comparativa_modelos(resultados)
-    visualizacion.fig6_residuales(resultados)
+    visualizacion.fig6_comparativa_modelos(resultados)
+    visualizacion.fig8_residuales(resultados)
 
     banner("RESUMEN EJECUTIVO")
     tabla = resultados["tabla"]
