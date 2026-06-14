@@ -1,5 +1,3 @@
-# estadistica descriptiva
-
 import numpy as np
 import pandas as pd
 from datos import df_viajes, df_modelo, NUMERICAS
@@ -7,7 +5,6 @@ from datos import df_viajes, df_modelo, NUMERICAS
 def titulo(texto):
     print(f"\n{'='*50}\n  {texto}\n{'='*50}")
 
-#estadisticas
 def estadisticas_completas(serie, nombre):
     datos = serie.dropna().values
 
@@ -16,25 +13,24 @@ def estadisticas_completas(serie, nombre):
     varianza = np.var(datos, ddof=1)
     desv_std = np.std(datos, ddof=1)
 
-    # moda: valor que mas se repite
     valores, conteos = np.unique(datos.round(2), return_counts=True)
     moda = valores[np.argmax(conteos)]
 
     print(f"\n  Variable: {nombre}")
-    print(f"    Media            : {media:.4f}")
-    print(f"    Mediana          : {mediana:.4f}")
-    print(f"    Moda             : {moda:.4f}")
-    print(f"    Varianza         : {varianza:.4f}")
-    print(f"    Desv. estandar   : {desv_std:.4f}")
+    print(f"    Media          : {media:.4f}")
+    print(f"    Mediana        : {mediana:.4f}")
+    print(f"    Moda           : {moda:.4f}")
+    print(f"    Varianza       : {varianza:.4f}")
+    print(f"    Desv. estandar : {desv_std:.4f}")
+
 
 def covarianza_correlacion(df, col1, col2):
     x = df[col1].values
     y = df[col2].values
     n = len(x)
 
-    cov_pob  = np.sum((x - x.mean()) * (y - y.mean())) / n
-    cov_mues = np.sum((x - x.mean()) * (y - y.mean())) / (n - 1)
-    corr     = cov_mues / (np.std(x, ddof=1) * np.std(y, ddof=1))
+    cov_mues = np.sum((x-x.mean()) * (y-y.mean()))/(n-1)
+    corr     = cov_mues/(np.std(x, ddof=1) * np.std(y, ddof=1))
 
     print(f"\n  [{col1}  vs  {col2}]")
     print(f"    Covarianza muestral    : {cov_mues:.4f}")
