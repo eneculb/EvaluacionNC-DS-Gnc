@@ -1,13 +1,8 @@
-# datos del proyecto - Encuesta Origen Destino (EOD) Santiago 2012
-# fuente: SECTRA / U. Alberto Hurtado. datos reales a nivel de viaje
-# cada fila es un viaje real. queremos predecir cuanto dura (en minutos)
-
 import pandas as pd
 import numpy as np
 
 df_viajes = pd.read_csv("eod_viajes.csv")
 
-# one-hot a las categoricas
 df_modelo = pd.get_dummies(df_viajes[["modo", "proposito", "periodo"]], dtype=int)
 df_modelo["es_hombre"] = df_viajes["es_hombre"]
 df_modelo["edad"]      = df_viajes["edad"]
