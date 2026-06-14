@@ -39,5 +39,3 @@ if __name__ == "__main__":
   4. Se usó One-Hot Encoding para las variables categóricas (modo, propósito,
      periodo), normalización con StandardScaler y split 80/20.
 """)
-
-s,.c v,xmd v
