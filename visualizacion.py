@@ -1,5 +1,3 @@
-# figuras
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,8 +24,6 @@ PALETTE = [
     "#764ba2", "#f093fb", "#43e97b", "#fa709a", "#fee140",
 ]
 
-
-# f1 - histogramas de tiempo y distancia
 def fig1_distribuciones():
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     fig.suptitle("FIGURA 1 — Distribución del Tiempo y la Distancia",
@@ -49,8 +45,6 @@ def fig1_distribuciones():
 
     plt.tight_layout(); plt.show()
 
-
-# f2 - boxplot del tiempo segun proposito
 def fig2_boxplot():
     propositos = df_viajes["proposito"].unique()
     datos = [df_viajes[df_viajes["proposito"] == p]["tiempo"].values for p in propositos]
@@ -65,14 +59,11 @@ def fig2_boxplot():
     ax.set_ylabel("Tiempo (min)"); ax.grid(axis="y")
     plt.tight_layout(); plt.show()
 
-
-# f3 - barras (vertical) y linea
 def fig3_barras_linea():
     fig, axes = plt.subplots(1, 2, figsize=(15, 5))
     fig.suptitle("FIGURA 3 — Tiempo por propósito y por edad",
                  fontsize=13, color="#e0e0e0", fontweight="bold")
 
-    # barras verticales: tiempo promedio por proposito
     ax = axes[0]
     prom_prop = df_viajes.groupby("proposito")["tiempo"].mean().sort_values()
     ax.bar(prom_prop.index, prom_prop.values, color=PALETTE[:len(prom_prop)])
@@ -80,7 +71,6 @@ def fig3_barras_linea():
     ax.set_title("Por propósito de viaje")
     ax.tick_params(axis="x", rotation=20); ax.grid(axis="y")
 
-    # linea: tiempo promedio por tramo de edad
     ax = axes[1]
     df_viajes["tramo_edad"] = (df_viajes["edad"] // 10) * 10
     prom_edad = df_viajes.groupby("tramo_edad")["tiempo"].mean()
@@ -91,8 +81,6 @@ def fig3_barras_linea():
 
     plt.tight_layout(); plt.show()
 
-
-# f4 - tiempo promedio por comuna (barh)
 def fig4_tiempo_comuna():
     por_comuna = df_viajes.groupby("comuna_origen")["tiempo"].mean().sort_values().tail(15)
     media = df_viajes["tiempo"].mean()
@@ -106,8 +94,6 @@ def fig4_tiempo_comuna():
     ax.set_xlabel("Tiempo promedio (min)"); ax.legend(fontsize=8); ax.grid(axis="x")
     plt.tight_layout(); plt.show()
 
-
-# f5 - mapa de calor de correlacion (seaborn)
 def fig5_correlacion():
     matriz = df_modelo[NUMERICAS].corr()
     labels = ["Tiempo", "Distancia", "Edad", "Etapas", "Es hombre"]
@@ -120,11 +106,10 @@ def fig5_correlacion():
                 linewidths=0.5, cbar_kws={"shrink": 0.8})
     plt.tight_layout(); plt.show()
 
-
-# f6 - comparativa de modelos (scatter real vs predicho)
 def fig6_comparativa_modelos(resultados):
-    d = resultados["datos"]; modelos = resultados["modelos"]
-    y_test = d["y_test"]
+    d       = resultados["datos"]
+    modelos = resultados["modelos"]
+    y_test  = d["y_test"]
     rng = np.random.default_rng(42)
     idx = rng.choice(len(y_test), size=min(2000, len(y_test)), replace=False)
 
@@ -133,7 +118,15 @@ def fig6_comparativa_modelos(resultados):
         ("Árbol de Decisión", modelos["dt"].predict(d["X_test"]), "#4ecdc4"),
         ("Random Forest",     modelos["rf"].predict(d["X_test"]), "#ffd93d"),
     ]
-    fig, axes = plt.subplots(1, 3, figsize=(17, 5))
+    if "nn" in modelos:
+        sy      = d["sy"]
+        pred_nn = sy.inverse_transform(modelos["nn"].predict(d["X_test"], verbose=0)).ravel()
+        info.append(("Red Neuronal", pred_nn, "#ff6b6b"))
+
+    n = len(info)
+    fig, axes = plt.subplots(1, n, figsize=(5 * n + 2, 5))
+    if n == 1:
+        axes = [axes]
     fig.suptitle("FIGURA 6 — Comparativa de Modelos (Test Set)",
                  fontsize=13, color="#e0e0e0", fontweight="bold")
     for ax, (nombre, y_pred, color) in zip(axes, info):
@@ -144,8 +137,6 @@ def fig6_comparativa_modelos(resultados):
         ax.set_title(f"{nombre}\nR² = {r2_v:.3f}"); ax.legend(fontsize=8); ax.grid(True)
     plt.tight_layout(); plt.show()
 
-
-# f7 - importancia de variables (barh)
 def fig7_importancia(resultados):
     importancias = resultados["importancias"][:10]
     fig, ax = plt.subplots(figsize=(9, 6))
@@ -157,16 +148,15 @@ def fig7_importancia(resultados):
     bars = ax.barh(labels_f, vals_f, color=[PALETTE[i % len(PALETTE)] for i in range(len(vals_f))])
     ax.set_xlabel("Importancia")
     for b in bars:
-        ax.text(b.get_width() + 0.005, b.get_y() + b.get_height()/2,
+        ax.text(b.get_width() + 0.005, b.get_y() + b.get_height() / 2,
                 f"{b.get_width():.3f}", va="center", fontsize=8)
     ax.grid(axis="x")
     plt.tight_layout(); plt.show()
 
-
-# f8 - residuales (scatter)
 def fig8_residuales(resultados):
-    d = resultados["datos"]; modelos = resultados["modelos"]
-    y_test = d["y_test"]
+    d       = resultados["datos"]
+    modelos = resultados["modelos"]
+    y_test  = d["y_test"]
     rng = np.random.default_rng(42)
     idx = rng.choice(len(y_test), size=min(2000, len(y_test)), replace=False)
 
@@ -175,7 +165,15 @@ def fig8_residuales(resultados):
         ("Árbol de Decisión", modelos["dt"].predict(d["X_test"]), "#4ecdc4"),
         ("Random Forest",     modelos["rf"].predict(d["X_test"]), "#ffd93d"),
     ]
-    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+    if "nn" in modelos:
+        sy      = d["sy"]
+        pred_nn = sy.inverse_transform(modelos["nn"].predict(d["X_test"], verbose=0)).ravel()
+        info.append(("Red Neuronal", pred_nn, "#ff6b6b"))
+
+    n = len(info)
+    fig, axes = plt.subplots(1, n, figsize=(5 * n + 1, 5))
+    if n == 1:
+        axes = [axes]
     fig.suptitle("FIGURA 8 — Residuales por Modelo",
                  fontsize=13, color="#e0e0e0", fontweight="bold")
     for ax, (nombre, y_pred, color) in zip(axes, info):
@@ -189,7 +187,6 @@ def fig8_residuales(resultados):
         ax.set_title(f"Residuales — {nombre}"); ax.legend(fontsize=8); ax.grid(True)
     plt.tight_layout(); plt.show()
 
-#funcion principal
 def generar_todas(resultados):
     print("\n  Mostrando figuras...")
     fig1_distribuciones()
