@@ -42,17 +42,11 @@ if __name__ == "__main__":
     imps     = resultados["importancias"]
 
     if resultados_nn is not None:
-        mejor = resultados_nn["mejor"]
+        mejor    = resultados_nn["mejor"]
         metricas = resultados_nn["metricas"]
 
-    print("  PARTE 2 — Métricas en test set")
-    print("  ──────────────────────────────────")
-    for m in metricas:
-        print(f"  {m['nombre']:<28} R²={m['r2']:+.3f}  RMSE={m['rmse']:.2f} min")
-
-    print(f"\n  ✔ Mejor modelo: {mejor}")
-
-    print("  PARTE 2 y 3 — Métricas en test set")
+    encabezado = "PARTE 2 y 3 — Métricas en test set" if resultados_nn is not None else "PARTE 2 — Métricas en test set"
+    print(f"  {encabezado}")
     print("  ──────────────────────────────────")
     for m in metricas:
         print(f"  {m['nombre']:<28} R²={m['r2']:+.3f}  RMSE={m['rmse']:.2f} min")
